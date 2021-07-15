@@ -46,7 +46,7 @@ setup(
     options={'py2app': {'iconfile': "resources/asmbattle.icns"},
              'cython': {"language_level":"3"}},
     install_requires=[
-        "Cython", "PyQt6", "pygubu", "pillow", "markdown", "tk_html_widgets"
+        "pillow", "markdown", "tk_html_widgets"
     ],
     entry_points={
         "gui_scripts": [
