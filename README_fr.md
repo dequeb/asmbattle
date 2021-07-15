@@ -1,7 +1,7 @@
 # ASM battle
 
 Ce programme est pour moi le résultat d'un vieux rêve. 
-Celui de créer une arène pour explorer (légalement) la rencontre d'apprentis pirates informatiques. 
+Celui de créer une arène pour explorer un langage assembleur dans un environnement simple où l'on puisse apprendre et jouer.
 
 ## Le jeu
 Chaque joueur soumet au jeu un programme dans un langage assembleur simplifié. Chacun d'eux est
