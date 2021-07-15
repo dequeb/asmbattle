@@ -3,7 +3,6 @@
 """simple assembler code"""
 import re
 from enum import Enum
-
 from .opcodes import OpCodes
 
 
@@ -24,7 +23,7 @@ class Assembler:
 
     # registry value range
     MIN_VALUE = 0
-    MAX_VALUE = 255
+    MAX_VALUE = 0xFFFF
 
     # Regex group indexes for operands
     OP1_GROUP = 3
@@ -47,7 +46,10 @@ class Assembler:
         # current line number
         self._line_number = 0
 
-    def assemble(self, text: str):
+    def assemble(self, text: str, base_address: int):
+        """ translate code into its binary representation for loading at base_adresse.
+        Only label adressing, not hardcoded jump to allow for call elsewere in memory"""
+
         # Use https://www.debuggex.com/
         # Matches: "label: INSTRUCTION (["')OPERAND1(]"'), (["')OPERAND2(]"')
         # GROUPS:      1       2               3                    7
@@ -88,7 +90,7 @@ class Assembler:
                         # Add mapping instr pos to line number
                         # Don't do it for DB as this is not a real instruction
                         if instr != 'DB':
-                            self._mapping[len(self._code)] = self._line_number
+                            self._mapping[len(self._code)+ base_address] = self._line_number
 
                         # switch case on operand name if exist
                         function_name = getattr(self, f"_oper_{instr}", None )
@@ -101,7 +103,7 @@ class Assembler:
         for i in range(len(self._code)):
             if type(self._code[i]) is not int:
                 if self._code[i] in self._labels:
-                    self._code[i] = self._labels[self._code[i]]
+                    self._code[i] = self._labels[self._code[i]] + base_address
                 else:
                     raise IndexError(f"Undefined label: {self._code[i]}")
 
@@ -140,16 +142,26 @@ class Assembler:
 
     def _parse_offset_addressing(self, text: str) -> int:
         """ register [+ | - value]
-
-        :param text:
-        :return:
+        OOOOOOOO OOOOOORR
         """
+        # original 16-bit values
+        #  OFF_SET_MIN = -16       # 0b 0001 1111
+        #  OFF_SET_MAX  = 0x0F     # 0b 0000 1111
+        #  NEG_TO_POS   = 0x10     # 0b 0001 0000   in 5 bits
+        #  SHIFT        = 0x08     # 0b 0000 1000   of 3 bits
+
+        ## new 32-bits values
+        OFF_SET_MIN = -16       # 0b 0001 1111 1111 1111
+        OFF_SET_MAX  = 0x0FFF   # 0b 0000 1111 1111 1111
+        NEG_TO_POS   = 0x1000   # 0b 0001 0000 0000 0000   in 13 bits
+        SHIFT        = 0x0008   # 0b 0000 0000 0000 1000   of 3 bits
+
         text = text.replace(" ", "")
         try:
-            base = self._parse_register(text[:1])
+            register = self._parse_register(text[:1])
             offset_start = 1
         except ValueError:
-            base = self._parse_register(text[:2])
+            register = self._parse_register(text[:2])
             offset_start = 2
 
         if text[offset_start] == '-':
@@ -161,12 +173,12 @@ class Assembler:
 
         offset = m * self._parse_number(text[offset_start + 1:])
 
-        if offset < -16 or offset > 15:
-            raise IndexError(f"offset must be a value between -16...+15 on line {self._line_number}: '{self._line}'")
+        if offset < OFF_SET_MIN or offset > OFF_SET_MAX:
+            raise IndexError(f"offset must be a value between {OFF_SET_MIN}...+{OFF_SET_MAX} on line {self._line_number}: '{self._line}'")
 
         if offset < 0:
-            offset = 32 + offset   # two's complement representation in 5-bit
-        return offset * 8 + base   # shift offset 3 bits right and add code for register
+            offset = NEG_TO_POS + offset   # two's complement representation
+        return offset * SHIFT + register   # shift offset right and add code for register
 
     def _parse_reg_or_number(self, text, type_reg, type_number):
         """Allowed: Register, Label or Number; SP+/-Number is allowed for 'regaddress' type

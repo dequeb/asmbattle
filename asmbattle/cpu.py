@@ -3,19 +3,27 @@
 """simple assembler code"""
 import logging
 import math
-from math import floor, ceil, log
+import os
+import gettext
+from math import floor
 
-from .opcodes import OpCodes
-from .memory import BaseStorage, Memory, NumBase
+from asmbattle.opcodes import OpCodes
+from asmbattle.memory import BaseStorage, NumBase, FaultError
 
+PROGRAM_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = os.path.abspath(PROGRAM_DIR + "/..")
+RESOURCE_DIR = ROOT_DIR + "/resources"
+ICON_DIR = ROOT_DIR + "/resources/icons"
+LOCALE_DIR = ROOT_DIR + "/locale"
 
-class FaultError(BaseException):
-    pass
-
+# Set up message catalog access
+t = gettext.translation('ui_view', LOCALE_DIR, fallback=True)
+t.install()
+_ = t.gettext
 
 class Cpu:
     MIN_VALUE = 0
-    MAX_VALUE = 255
+    MAX_VALUE = 0xFFFF
 
     REG_A = 0
     REG_B = 1
@@ -25,15 +33,16 @@ class Cpu:
     LAST_REGISTRY = REG_SP
     REGISTRY_COUNT = LAST_REGISTRY + 1
 
-    def __init__(self, memory: BaseStorage, io: BaseStorage, cpu_id: int):
+    def __init__(self, memory: BaseStorage, io: BaseStorage, sp_base:int, cpu_id: int):
         self._memory = memory
+        self._sp_base = sp_base
         self._io = io
         self._id = cpu_id
         self._log = logging.getLogger(__name__)
         self.display_format = NumBase.Hexadecimal
 
         self._registries = [0] * Cpu.REGISTRY_COUNT
-        self._stack_pointer = Memory.MAX_SP
+        self._stack_pointer = self._sp_base
         self._instruction_pointer = 0
         self._zero = False
         self._carry = False
@@ -41,7 +50,7 @@ class Cpu:
 
     def reset(self):
         self._registries = [0] * Cpu.REGISTRY_COUNT
-        self._stack_pointer = Memory.MAX_SP
+        self._stack_pointer = self._sp_base
         self._instruction_pointer = 0
         self._zero = False
         self._carry = False
@@ -65,7 +74,7 @@ class Cpu:
         elif name == "IP":
             return format(self._instruction_pointer, format_str)
         else:
-            raise KeyError(f"Unknown key: {name}")
+            raise KeyError(_("Unknown key: {0}").format(name))
 
     def get_flag(self, name: str):
         format_str ="^6"
@@ -78,7 +87,7 @@ class Cpu:
         elif name == "FAULT":
             return format(str(self._fault), format_str)
         else:
-            raise KeyError(f"Unknown key: {name}")
+            raise KeyError(_("Unknown key: {0}").format(name))
 
     @property
     def _stack_pointer(self):
@@ -88,10 +97,10 @@ class Cpu:
     def _stack_pointer(self, value: int):
         if value < Cpu.MIN_VALUE:
             self._fault = True
-            raise FaultError(f"Stack overflow")
+            raise FaultError(_("Stack overflow"))
         elif value > Cpu.MAX_VALUE:
             self._fault = True
-            raise FaultError(f"Stack underflow")
+            raise FaultError(_("Stack underflow"))
         self._registries[Cpu.REG_SP] = value
 
     @property
@@ -115,17 +124,17 @@ class Cpu:
             return reg
         else:
             self._fault = True
-            raise FaultError(f"Invalid registry {reg}")
+            raise FaultError(_("Invalid registry {reg}").format(reg=reg))
 
     def _check_gpr(self, reg: int):
         if reg in range(Cpu.REG_A, Cpu.REG_D):
             return reg
         else:
             self._fault = True
-            raise FaultError(f"Invalid registry {reg}")
+            raise FaultError(_("Invalid registry {reg}").format(reg=reg))
 
     def _check_value(self, value: int):
-        if value in range(Cpu.MIN_VALUE, Cpu.MAX_VALUE):
+        if value in range(Cpu.MIN_VALUE, Cpu.MAX_VALUE + 1):
             return value
         else:
             self._fault = True
@@ -151,9 +160,9 @@ class Cpu:
     def _push(self, value: int):
         self._memory.store(self._registries[Cpu.REG_SP], value, self._id)
         self._stack_pointer -= 1
-        if self._stack_pointer < self._memory.MIN_SP:
+        if self._stack_pointer < self._memory.min_SP():
             self._fault = True
-            raise FaultError("Stack overflow")
+            raise FaultError(_("Stack overflow"))
 
     def _pop(self) -> int:
         self._stack_pointer += 1
@@ -167,7 +176,7 @@ class Cpu:
         """
         if divisor == 0:
             self._fault = True
-            raise FaultError("Division by zero")
+            raise FaultError(_("Division by zero"))
         else:
             return math.floor(self._get_gpr_sp(0) / divisor)
 
@@ -179,7 +188,7 @@ class Cpu:
     def instruction_pointer(self, value):
         if value < 0 or value >= len(self._memory):
             self._fault = True
-            raise FaultError(f"Instruction pointer {self._instruction_pointer} is outside of memory")
+            raise FaultError(_("Instruction pointer {ip} is outside of memory").format(ip=self._instruction_pointer))
         self._instruction_pointer = value
 
     def increment_instruction_pointer(self):
@@ -204,18 +213,31 @@ class Cpu:
 
     def _indirect_registry_address(self, value):
         """indirect memory address"""
-        reg = value % 8     # TODO : remove constants from code
+
+        # original 16-bit values
+        #  OFF_SET_MIN = -16       # 0b 0001 1111
+        #  OFF_SET_MAX  = 0x0F     # 0b 0000 1111
+        #  NEG_TO_POS   = 0x10     # 0b 0001 0000   in 5 bits
+        #  SHIFT        = 0x08     # 0b 0000 1000   of 3 bits
+
+        ## new 32-bits values
+        OFF_SET_MIN = -16       # 0b 0001 1111 1111 1111
+        OFF_SET_MAX  = 0x0FFF   # 0b 0000 1111 1111 1111
+        NEG_TO_POS   = 0x1000   # 0b 0001 0000 0000 0000   in 13 bits
+        SHIFT        = 0x0008   # 0b 0000 0000 0000 1000   of 3 bits
+
+        reg = value % SHIFT
         base = self._registries[reg]
-        offset = floor(value / 8)
-        if offset > 15:
-            offset -= 32
+        offset = floor(value / SHIFT)
+        if offset > OFF_SET_MAX:
+            offset -= NEG_TO_POS
         return base + offset
 
     def step(self) -> bool:
-        instr_name = "UNKNOWN"
+        instr_name = _("UNKNOWN")
 
         if self._fault:
-            raise FaultError("FAULT. Reset to continue")
+            raise FaultError(_("FAULT. Reset to continue"))
         else:
             try:
                 instr = self._memory.load(self._instruction_pointer)
@@ -225,7 +247,8 @@ class Cpu:
                 if function_name is not None:
                     result = function_name()
                 else:
-                    raise FaultError(f"Unknown instruction {instr} = {instr_name} at: {self._instruction_pointer}")
+                    raise FaultError(_("Unknown instruction {instr} = {instr_name} at: {ip}")
+                                     .format(instr=instr, instr_name=instr_name, ip=self._instruction_pointer))
 
             except FaultError as error:
                 self._fault = True
@@ -670,7 +693,7 @@ class Cpu:
     def _oper_OR_REG_WITH_REG(self):
         """reg_to = reg_to OR reg_from"""
         reg_to = self._check_gpr(self._memory_load_at_ip())
-        reg_from = self._check_gpp(self._memory_load_at_ip())
+        reg_from = self._check_gpr(self._memory_load_at_ip())
         self._set_gpr(reg_to, self._check_operation(self._get_gpr(reg_to) |
                                                        self._get_gpr(reg_from)))
         self.increment_instruction_pointer()
