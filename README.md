@@ -1,6 +1,6 @@
 # ASM battle
 
-This program is for me the old dream of creating a playing field to experiment the (legal) meeting of pseudo pirates. 
+This program is for me the old dream of creating a playing field to experiment with a simplified assembler environment that could be use to learn and to play. 
 
 ## The game
 Each player submits a program in the simplified assembler supported by the program. Each program is assembled, loaded in its own memory location and is assigned a virtual processor. Each memory location and each character written to screen at the end of the game counts for one point.
