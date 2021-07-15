@@ -1,0 +1,75 @@
+## ASM Battle
+# Copyright (C) 2021
+# This file is distributed under the same license as the asmbattle package.
+# Michel Rondeau <mr (at) michel rondeau (dot) com>, 2021.
+#
+# see: https://phrase.com/blog/posts/translate-python-gnu-gettext/ for gettext receipe
+# see: https://pymotw.com/2/gettext/ for general gettext documentation
+#   1. $ python pygettext.py -d base -o locale/base.pot src/xxxx.py
+#       OR
+#      $ xgettext -d gettext_example -o gettext_example.pot gettext_example.py
+#   2. $ cp xxxx.pot xx/LC_MESSAGES
+#   3. $ cd locales/xx/LC_MESSAGES
+#   4. $ python /Library/Frameworks/Python.framework/Versions/3.9/share/doc/python3.9/examples/Tools/i18n/msgfmt.py -o base.mo base
+#      OR
+#      $ msgfmt -o gettext_example.mo gettext_example.po
+#
+
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.9.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-07-13 11:40-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: asmbattle/ui_controller.py:82 asmbattle/ui_controller.py:292
+#: asmbattle/ui_controller.py:718
+msgid "CPU Halted"
+msgstr ""
+
+#: asmbattle/ui_controller.py:114
+msgid "ASM Battle"
+msgstr ""
+
+#: asmbattle/ui_controller.py:204 asmbattle/ui_controller.py:229
+msgid "Load ASM"
+msgstr ""
+
+#: asmbattle/ui_controller.py:205
+msgid "text files"
+msgstr ""
+
+#: asmbattle/ui_controller.py:205 asmbattle/ui_controller.py:230
+msgid "assembler files"
+msgstr ""
+
+#: asmbattle/ui_controller.py:253 asmbattle/ui_controller.py:689
+msgid "STOP"
+msgstr ""
+
+#: asmbattle/ui_controller.py:282 asmbattle/ui_controller.py:704
+msgid ">>Run"
+msgstr ""
+
+#: asmbattle/ui_controller.py:345
+msgid "Memory protection error: program size {} exceed limit of {}"
+msgstr ""
+
+#: asmbattle/ui_controller.py:640
+msgid "Player {}"
+msgstr ""
+
+#: asmbattle/ui_controller.py:649
+msgid "Player {}{}"
+msgstr ""
+
+#: asmbattle/ui_controller.py:672
+msgid "No free slot to add a player. Click 'Erase' to remove a player."
+msgstr ""

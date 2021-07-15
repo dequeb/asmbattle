@@ -1,0 +1,105 @@
+# ASM Battle
+# Copyright (C) 2021
+# This file is distributed under the same license as the PACKAGE package.
+# Michel Rondeau <mr (at) michel rondeau (dot) com>, 2021.
+#
+# see: https://phrase.com/blog/posts/translate-python-gnu-gettext/ for gettext receipe
+# see: https://pymotw.com/2/gettext/ for general gettext documentation
+#   1. $ python pygettext.py -d base -o locale/base.pot src/xxxx.py
+#       OR
+#      $ xgettext -d gettext_example -o gettext_example.pot gettext_example.py
+#   2. $ cp xxxx.pot xx/LC_MESSAGES
+#   3. $ cd locales/xx/LC_MESSAGES
+#   4. $ python /Library/Frameworks/Python.framework/Versions/3.9/share/doc/python3.9/examples/Tools/i18n/msgfmt.py -o base.mo base
+#      OR
+#      $ msgfmt -o gettext_example.mo gettext_example.po
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-07-09 18:11-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Michel Rondeau <mr@michelrondeau (dot) com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: Français canadien\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: asmbattle/aboutbox.py:35
+msgid "about..."
+msgstr "À propos de ..."
+
+#: asmbattle/aboutbox.py:56
+#, python-brace-format
+msgid "Version: {AboutBox.VERSION}"
+msgstr "Version : {AboutBox.VERSION}"
+
+#: asmbattle/aboutbox.py:57
+msgid ""
+"\n"
+"        An original idea of Michel Rondeau (https://www.michelrondeau.com/"
+"asmbattle) based on prior work by Marco Schweighauser (https://schweigi."
+"github.io/assembler-simulator/)"
+msgstr "\n"
+"        Une idée originale de Michel Rondeau (https://www.michelrondeau.com/"
+"asmbattle) basée sur les travaux de Marco Schweighauser (https://schweigi."
+"github.io/assembler-simulator/)"
+
+#: asmbattle/aboutbox.py:61
+msgid "   Ok   "
+msgstr "   Ok   "
+
+#: asmbattle/aboutbox.py:65
+msgid "/README.md"
+msgstr "/README_fr.md"
+
+#: asmbattle/aboutbox.py:69
+msgid "/LICENCE.txt"
+msgstr "/LICENCE_fr.txt"
+
+#: asmbattle/aboutbox.py:73
+msgid "/CHANGELOG.md"
+msgstr "/CHANGELOG_fr.md"
+
+#: asmbattle/aboutbox.py:98
+msgid "help..."
+msgstr "Aide..."
+
+#: asmbattle/aboutbox.py:100
+msgid "See original documentation at: "
+msgstr "Voir documentation originale : "
+
+#: asmbattle/aboutbox.py:108
+msgid ""
+" \n"
+"#Extension#\n"
+"\n"
+"##IO Instructions##\n"
+"\n"
+"Read or write from an IO port. The current implementation uses these "
+"instruction to read or write to screen. \n"
+"The range of valid port depends on hardware attached to CPU.         \n"
+"\n"
+"\n"
+"    IN port, reg\n"
+"    IN reg, reg\n"
+"    OUT port, reg\n"
+"    OUT reg, reg"
+msgstr ""
+" \n"
+"#Extension#\n"
+"\n"
+"##Instructions d'entrées-sorties##\n"
+"\n"
+"Lit et écrit depuis un port d'entrée-sortie. La solution actuelle les utilise pour "
+"lire et écrire à l'écran. \n"
+"L'étendue des ports disponibles dépend du matériel lié au processeur.\n"
+"\n"
+"\n"
+"    IN port, reg\n"
+"    IN reg, reg\n"
+"    OUT port, reg\n"
+"    OUT reg, reg"
