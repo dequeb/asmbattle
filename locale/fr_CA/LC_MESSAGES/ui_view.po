@@ -1,173 +1,162 @@
-## ASM Battle
-# Copyright (C) 2021
-# This file is distributed under the same license as the asmbattle package.
-# Michel Rondeau <mr (at) michel rondeau (dot) com>, 2021.
-#
-# see: https://phrase.com/blog/posts/translate-python-gnu-gettext/ for gettext receipe
-# see: https://pymotw.com/2/gettext/ for general gettext documentation
-#   1. $ python pygettext.py -d base -o locale/base.pot src/xxxx.py
-#       OR
-#      $ xgettext -d gettext_example -o gettext_example.pot gettext_example.py
-#   2. $ cp xxxx.pot xx/LC_MESSAGES
-#   3. $ cd locales/xx/LC_MESSAGES
-#   4. $ python /Library/Frameworks/Python.framework/Versions/3.9/share/doc/python3.9/examples/Tools/i18n/msgfmt.py -o base.mo base
-#      OR
-#      $ msgfmt -o gettext_example.mo gettext_example.po
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.9.1\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-09 18:11-0400\n"
+"POT-Creation-Date: 2021-07-16 06:48-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Michel Rondeau <mr@michelrondeau (dot) com>\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: Français canadien\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: asmbattle/ui_view.py:107
+#: asmbattle/ui_view.py:145
 msgid "New"
-msgstr "Nouveau"
+msgstr ""
 
-#: asmbattle/ui_view.py:108
+#: asmbattle/ui_view.py:146
 msgid "Open"
-msgstr "Ouvrir"
+msgstr ""
 
-#: asmbattle/ui_view.py:109
+#: asmbattle/ui_view.py:147
 msgid "Save"
-msgstr "Sauvegarder"
+msgstr ""
 
-#: asmbattle/ui_view.py:118
+#: asmbattle/ui_view.py:154
 msgid "Quit"
-msgstr "Quitter"
+msgstr ""
 
-#: asmbattle/ui_view.py:119
+#: asmbattle/ui_view.py:155
 msgid "File"
-msgstr "Fichier"
+msgstr ""
 
-#: asmbattle/ui_view.py:121
+#: asmbattle/ui_view.py:157
 msgid "Undo"
-msgstr "Annuler"
-
-#: asmbattle/ui_view.py:126
-msgid "Cut"
-msgstr "Couper"
-
-#: asmbattle/ui_view.py:128
-msgid "Copy"
-msgstr "Copier"
-
-#: asmbattle/ui_view.py:130
-msgid "Paste"
-msgstr "Coller"
-
-#: asmbattle/ui_view.py:132
-msgid "Select All"
-msgstr "Sélectionner tout"
-
-#: asmbattle/ui_view.py:135
-msgid "Edit"
-msgstr "Éditer"
-
-#: asmbattle/ui_view.py:137
-msgid "Help..."
-msgstr "Aide..."
-
-#: asmbattle/ui_view.py:138
-msgid "About..."
-msgstr "À propose de..."
-
-#: asmbattle/ui_view.py:139
-msgid "Help"
-msgstr "Aide"
-
-#: asmbattle/ui_view.py:149
-msgid "Prepare"
-msgstr "Préparer"
-
-#: asmbattle/ui_view.py:150
-msgid "Play"
-msgstr "Jouer"
-
-#: asmbattle/ui_view.py:158 asmbattle/ui_view.py:198
-msgid "Load..."
-msgstr "Ouvrir..."
-
-#: asmbattle/ui_view.py:160
-msgid "Save..."
-msgstr "Sauvegarder..."
+msgstr ""
 
 #: asmbattle/ui_view.py:162
+msgid "Cut"
+msgstr ""
+
+#: asmbattle/ui_view.py:164
+msgid "Copy"
+msgstr ""
+
+#: asmbattle/ui_view.py:166
+msgid "Paste"
+msgstr ""
+
+#: asmbattle/ui_view.py:168
+msgid "Select All"
+msgstr ""
+
+#: asmbattle/ui_view.py:171
+msgid "Edit"
+msgstr ""
+
+#: asmbattle/ui_view.py:173
+msgid "Help..."
+msgstr ""
+
+#: asmbattle/ui_view.py:174
+msgid "About..."
+msgstr ""
+
+#: asmbattle/ui_view.py:175
+msgid "Help"
+msgstr ""
+
+#: asmbattle/ui_view.py:185
+msgid "Prepare"
+msgstr ""
+
+#: asmbattle/ui_view.py:186
+msgid "Play"
+msgstr ""
+
+#: asmbattle/ui_view.py:194 asmbattle/ui_view.py:234
+msgid "Load..."
+msgstr ""
+
+#: asmbattle/ui_view.py:196
+msgid "Save..."
+msgstr ""
+
+#: asmbattle/ui_view.py:198
 msgid "Assemble"
-msgstr "Assembler"
+msgstr ""
 
-#: asmbattle/ui_view.py:164 asmbattle/ui_view.py:200
+#: asmbattle/ui_view.py:200 asmbattle/ui_view.py:236
 msgid ">>Run"
-msgstr ">> Exécuter"
+msgstr ""
 
-#: asmbattle/ui_view.py:166 asmbattle/ui_view.py:202
+#: asmbattle/ui_view.py:202 asmbattle/ui_view.py:238
 msgid ">Step"
-msgstr "> Pas à pas"
+msgstr ""
 
-#: asmbattle/ui_view.py:168 asmbattle/ui_view.py:204
+#: asmbattle/ui_view.py:204 asmbattle/ui_view.py:240
 msgid "Reset"
-msgstr "Réinitialiser"
+msgstr ""
 
-#: asmbattle/ui_view.py:174 asmbattle/ui_view.py:210
+#: asmbattle/ui_view.py:210 asmbattle/ui_view.py:246
 msgid "Speed (Hz): "
-msgstr "Vitesse (Hz) :"
+msgstr ""
 
-#: asmbattle/ui_view.py:182 asmbattle/ui_view.py:218
+#: asmbattle/ui_view.py:218 asmbattle/ui_view.py:254
 msgid "Hexadecimal"
-msgstr "Hexadécimal"
+msgstr ""
 
-#: asmbattle/ui_view.py:185 asmbattle/ui_view.py:221
+#: asmbattle/ui_view.py:221 asmbattle/ui_view.py:257
 msgid "Decimal"
-msgstr "Décimal"
+msgstr ""
 
-#: asmbattle/ui_view.py:188 asmbattle/ui_view.py:224
+#: asmbattle/ui_view.py:224 asmbattle/ui_view.py:260
 msgid "Display: "
-msgstr "Affichage :"
+msgstr ""
 
-#: asmbattle/ui_view.py:230
-msgid "To support me with this project, buy me pizza !"
-msgstr "Aidez-moi dans ce projet, achetez-moi de la pizza !"
+#: asmbattle/ui_view.py:266
+msgid "If you like this program, buy me pizza !"
+msgstr ""
 
-#: asmbattle/ui_view.py:237
+#: asmbattle/ui_view.py:273
 msgid "error"
-msgstr "erreur"
+msgstr ""
 
-#: asmbattle/ui_view.py:244
+#: asmbattle/ui_view.py:280
 msgid "Code"
-msgstr "Code"
+msgstr ""
 
-#: asmbattle/ui_view.py:255
+#: asmbattle/ui_view.py:294
 msgid "Screen"
-msgstr "Écran"
+msgstr ""
 
-#: asmbattle/ui_view.py:261
+#: asmbattle/ui_view.py:300
 msgid "screen"
 msgstr ""
 
-#: asmbattle/ui_view.py:267
+#: asmbattle/ui_view.py:306
 msgid "Memory"
-msgstr "Mémoire"
+msgstr ""
 
-#: asmbattle/ui_view.py:279
+#: asmbattle/ui_view.py:318
 msgid "CPU"
-msgstr "Processeur"
+msgstr ""
 
-#: asmbattle/ui_view.py:417
+#: asmbattle/ui_view.py:456
 msgid "Player "
-msgstr "Joueur "
+msgstr ""
 
-#: asmbattle/ui_view.py:419
+#: asmbattle/ui_view.py:458
 msgid "Erase"
-msgstr "Effacer"
+msgstr ""
 
-#: asmbattle/ui_view.py:421
+#: asmbattle/ui_view.py:460
 msgid "Error"
-msgstr "Erreur"
+msgstr ""

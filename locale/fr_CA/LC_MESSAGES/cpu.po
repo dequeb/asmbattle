@@ -1,0 +1,58 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-07-16 06:48-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: asmbattle/cpu.py:72 asmbattle/cpu.py:85
+#, python-brace-format
+msgid "Unknown key: {0}"
+msgstr ""
+
+#: asmbattle/cpu.py:95 asmbattle/cpu.py:160
+msgid "Stack overflow"
+msgstr ""
+
+#: asmbattle/cpu.py:98
+msgid "Stack underflow"
+msgstr ""
+
+#: asmbattle/cpu.py:122 asmbattle/cpu.py:129
+#, python-brace-format
+msgid "Invalid registry {reg}"
+msgstr ""
+
+#: asmbattle/cpu.py:174
+msgid "Division by zero"
+msgstr ""
+
+#: asmbattle/cpu.py:186
+#, python-brace-format
+msgid "Instruction pointer {ip} is outside of memory"
+msgstr ""
+
+#: asmbattle/cpu.py:232
+msgid "UNKNOWN"
+msgstr ""
+
+#: asmbattle/cpu.py:235
+msgid "FAULT. Reset to continue"
+msgstr ""
+
+#: asmbattle/cpu.py:245
+#, python-brace-format
+msgid "Unknown instruction {instr} = {instr_name} at: {ip}"
+msgstr ""
