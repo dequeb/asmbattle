@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-16 06:48-0400\n"
+"POT-Creation-Date: 2021-07-16 09:31-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,10 +42,6 @@ msgstr ""
 #: asmbattle/cpu.py:186
 #, python-brace-format
 msgid "Instruction pointer {ip} is outside of memory"
-msgstr ""
-
-#: asmbattle/cpu.py:232
-msgid "UNKNOWN"
 msgstr ""
 
 #: asmbattle/cpu.py:235

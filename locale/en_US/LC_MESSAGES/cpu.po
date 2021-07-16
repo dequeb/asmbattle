@@ -1,21 +1,33 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# ASM Battle
+# Copyright (C) 2021
+# This file is distributed under the same license as the asmbattle package.
+# Michel Rondeau <mr (at) michel rondeau (dot) com>, 2021.
+#
+# see: https://phrase.com/blog/posts/translate-python-gnu-gettext/ for gettext receipe
+# see: https://pymotw.com/2/gettext/ for general gettext documentation
+#   1. $ python pygettext.py -d base -o locale/base.pot src/xxxx.py
+#       OR
+#      $ xgettext -d gettext_example -o gettext_example.pot gettext_example.py
+#   2. $ cp xxxx.pot xx/LC_MESSAGES
+#   3. $ cd locales/xx/LC_MESSAGES
+#   4. $ python /Library/Frameworks/Python.framework/Versions/3.9/share/doc/python3.9/examples/Tools/i18n/msgfmt.py -o base.mo base
+#      OR
+#      $ msgfmt -o gettext_example.mo gettext_example.po
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: 0.9.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-07-16 06:48-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Last-Translator: Michel Rondeau <mr@michelrondeau (dot) com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: US English \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
 
 #: asmbattle/cpu.py:72 asmbattle/cpu.py:85
 #, python-brace-format
@@ -42,10 +54,6 @@ msgstr ""
 #: asmbattle/cpu.py:186
 #, python-brace-format
 msgid "Instruction pointer {ip} is outside of memory"
-msgstr ""
-
-#: asmbattle/cpu.py:232
-msgid "UNKNOWN"
 msgstr ""
 
 #: asmbattle/cpu.py:235
