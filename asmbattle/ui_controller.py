@@ -3,28 +3,22 @@
 """game ui"""
 
 import time
-import os
+import locale
+import logging
 import random
 import sys
-import logging
 import threading
 import tkinter
-import gettext
 from tkinter import filedialog, messagebox, PhotoImage
 
 from asmbattle.assembler import Assembler
 from asmbattle.cpu import Cpu
 from asmbattle.memory import Screen, MixedMemory, NumBase, FaultError, Memory
 from asmbattle.ui_view import BaseWindow
-
-PROGRAM_DIR = os.path.dirname(os.path.abspath(__file__))
-ROOT_DIR = os.path.abspath(PROGRAM_DIR + "/..")
-RESOURCE_DIR = ROOT_DIR + "/resources"
-ICON_DIR = ROOT_DIR + "/resources/icons"
-LOCALE_DIR = ROOT_DIR + "/locale"
+from asmbattle.files import *
 
 # Set up message catalog access
-t = gettext.translation('ui_controller', LOCALE_DIR, fallback=True)
+t = get_translation('ui_controller')
 t.install()
 _ = t.gettext
 
@@ -114,7 +108,6 @@ class MainWindow(BaseWindow):
 
     def __init__(self, nb_cpu=1, *args, **kwargs):
         BaseWindow.__init__(self, title=MainWindow.TITLE)
-        logging.basicConfig(level=logging.DEBUG)
 
         # Model initialization
         self._nb_cpu = nb_cpu
@@ -805,6 +798,8 @@ class Windows2Panes(MainWindow):
 
 
 def main():
+    logging.basicConfig(level=logging.DEBUG)
+    logging.getLogger(__name__).debug(str(locale.getlocale()))
     root = Windows2Panes(sys.argv)
     root.mainloop()
 

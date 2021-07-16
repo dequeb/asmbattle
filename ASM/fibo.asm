@@ -16,6 +16,7 @@
 		POP C
 		POP B		; restore registers
 		POP A
+		JMP SWAP		; to ensure the sequence begins by 0, 1, 1, ...
 
 	loop:	PUSH A		; save registers
 		PUSH B
@@ -24,7 +25,6 @@
 		POP C
 		POP B		; restore registers
 		POP A
-		JMP SWAP		; to ensure the sequence begins by 0, 1, 1, ...
 
 		ADD B, A		; B + A -> B
 		JC END		; stop on buffer overflow

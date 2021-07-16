@@ -4,6 +4,12 @@
 import re
 from enum import Enum
 from .opcodes import OpCodes
+from asmbattle.files import *
+
+# Set up message catalog access
+t = get_translation('assembler')
+t.install()
+_ = t.gettext
 
 
 class ValueTypes(Enum):
@@ -105,7 +111,7 @@ class Assembler:
                 if self._code[i] in self._labels:
                     self._code[i] = self._labels[self._code[i]] + base_address
                 else:
-                    raise IndexError(f"Undefined label: {self._code[i]}")
+                    raise IndexError(_("Undefined label: {code}").format(code=self._code[i]))
 
         return {"code": self._code,
                 "mapping": self._mapping,
@@ -125,8 +131,9 @@ class Assembler:
         elif self.regex_num.match(text):
             return int(text, 10)
         else:
-            raise ValueError(f"invalid literal for int() with base 10: {text}"
-                             f" on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("invalid literal for int() with base 10: {text}"
+                             " on line {line_number}: '{line}'")
+                             .format(text=text, linenumber=self._line_number, line=self._line))
 
     def _parse_register(self, text: str) -> int:
         """Convert register name to numeric value
@@ -135,7 +142,6 @@ class Assembler:
         :return: register value
         :raise: ValueError if register not found
             """
-        """"""
 
         registers = ["A", "B", "C", "D", "SP"]
         return registers.index(text.upper())
@@ -169,12 +175,18 @@ class Assembler:
         elif text[offset_start] == '+':
             m = 1
         else:
-            raise ValueError(f"invalid value: {text} on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("invalid value: {text} on line {line_number}: '{line}'")
+                             .format(text=text, line_number=self._line_number, line=self._line))
 
         offset = m * self._parse_number(text[offset_start + 1:])
 
         if offset < OFF_SET_MIN or offset > OFF_SET_MAX:
-            raise IndexError(f"offset must be a value between {OFF_SET_MIN}...+{OFF_SET_MAX} on line {self._line_number}: '{self._line}'")
+            raise IndexError(_("offset must be a value between {OFF_SET_MIN}..."
+                               "{OFF_SET_MAX} on line {line_number}: '{line}'")
+                             .format(OFF_SET_MIN=OFF_SET_MIN,
+                                     OFF_SET_MAX=OFF_SET_MAX,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         if offset < 0:
             offset = NEG_TO_POS + offset   # two's complement representation
@@ -214,8 +226,14 @@ class Assembler:
         value = self._parse_number(text)
 
         if value < Assembler.MIN_VALUE or value > Assembler.MAX_VALUE:
-            raise ValueError(f"{type_number} must have a value between {Assembler.MIN_VALUE}-{Assembler.MAX_VALUE} on"
-                             f" line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{type_number} must have a value between "
+                               "{MIN_VALUE}-{MAX_VALUE} on"
+                               " line {line_number}: '{line}'")
+                             .format(type_number=type_number,
+                                     MIN_VALUE=Assembler.MIN_VALUE,
+                                     MAX_VALUE=Assembler.MAX_VALUE,
+                                     line_number=self._line_number,
+                                     line=self._line))
         return {type_number: value}
 
     def _parse_label(self, text: str):
@@ -223,7 +241,10 @@ class Assembler:
         if match:
             return match.group()
         else:
-            raise ValueError(f"{text} is not a label on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{text} is not a label on line {line_number}: '{line}'")
+                             .format(text=text,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
     def _get_value(self, text):
         character = text[0]
@@ -237,21 +258,32 @@ class Assembler:
             for i in range(len(text)):
                 value = ord(text[i])
                 if value > Assembler.MAX_VALUE:
-                    raise ValueError(f"{text[i]} does not have a valid ASCII value: {value}"
-                                     f" on line {self._line_number}: '{self._line}'")
+                    raise ValueError(_("{text} does not have a valid ASCII value: {value}"
+                                       " on line {line_number}: '{line}'")
+                                     .format(text=text[i],
+                                             value=value,
+                                             line_number=self._line_number,
+                                             line=self._line))
                 chars.append(value)
             return {ValueTypes.NUMBERS: chars}
 
         elif character == "'":   # single character
             text = text[1:-1]
             if len(text) > 1:
-                raise ValueError(f"Only one character is allowed. Use String instead"
-                                 f" on line {self._line_number}: '{self._line}'")
+                raise ValueError(_("Only one character is allowed. Use String instead"
+                                 " on line {line_number}: '{line}'")
+                                 .format(line_number=self._line_number,
+                                         line=self._line))
+
 
             value = ord(text[0])
             if value > Assembler.MAX_VALUE:
-                raise ValueError(f"{text[0]} does not have a valid ASCII value: {value}"
-                                 f" on line {self._line_number}: '{self._line}'")
+                raise ValueError(_("{text} does not have a valid ASCII value: {value}"
+                                   " on line {line_number}: '{line}'")
+                                 .format(text=text[0],
+                                         value=value,
+                                         line_number=self._line_number,
+                                         line=self._line))
             return {ValueTypes.NUMBER: value}
 
         else:   # REGISTER, NUMBER or LABEL
@@ -260,17 +292,23 @@ class Assembler:
     def _add_label(self, label: str):
         upper_label = label.upper()
         if upper_label in self._normalized_labels:
-            raise KeyError(f"Duplicate label: {label}")
+            raise KeyError(_("Duplicate label: {label}").format(label=label))
 
         if upper_label == "A" or upper_label == "B" or upper_label == "C" or upper_label == "D":
-            raise ValueError(f"Label contains keyword: {upper_label} on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("Label contains keyword: {upper_label} on line {line_number}: '{line}'")
+                             .format(upper_label=upper_label,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._labels[label] = len(self._code)
         self._normalized_labels[upper_label] = len(self._code)
 
     def _check_no_extra_arg(self, instr, arg):
         if arg is not None:
-            raise ValueError(f"{instr}: too many arguments on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{instr}: too many arguments on line {line_number}: '{line}'")
+                               .format(instr=instr,
+                                       line_number=self._line_number,
+                                       line=self._line))
 
     def _oper_DB(self, match: re.Match):
         p1 = self._get_value(match.group(Assembler.OP1_GROUP))
@@ -278,11 +316,14 @@ class Assembler:
         p1_value = p1[p1_type]
         if p1_type == ValueTypes.NUMBER:
             self._code.append(p1_value)
-        elif (p1_type == ValueTypes.NUMBERS):
+        elif p1_type == ValueTypes.NUMBERS:
             for val in p1_value:
                 self._code.append(val)
         else:
-            raise ValueError(f"DB does not support operand {p1_value} on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("DB does not support operand {p1_value} on line {line_number}: '{line}'")
+                             .format(p1_value=p1_value,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
     def _oper_HLT(self, match: re.Match):
         try:
@@ -320,8 +361,13 @@ class Assembler:
         elif p1_type == ValueTypes.REG_ADDRESS and p2_type == ValueTypes.NUMBER:
             op_code = OpCodes.MOV_NUMBER_TO_REGADDRESS
         else:
-            raise ValueError(f"MOV does not support operands from {p1_type.name} to {p2_type.name}"
-                             f" on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{inst}} does not support operands from {name1} to {name2}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="MOV",
+                                     name1=p1_type.name,
+                                     name2=p2_type.name,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._code.append(op_code.value)
         self._code.append(p1_value)
@@ -345,9 +391,13 @@ class Assembler:
         elif p1_type == ValueTypes.REGISTER and p2_type == ValueTypes.NUMBER:
             op_code = OpCodes.ADD_NUMBER_TO_REG
         else:
-            raise ValueError(f"ADD does not support operands {p1_value} and {p2_value}"
-                             f" on line {self._line_number}: '{self._line}'")
-
+            raise ValueError(_("{inst}} does not support operands {value1} and {value2}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="ADD",
+                                     value1=p1_value,
+                                     value2=p2_value,
+                                     line_number=self._line_number,
+                                     line=self._line))
         self._code.append(op_code.value)
         self._code.append(p1_value)
         self._code.append(p2_value)
@@ -371,8 +421,13 @@ class Assembler:
         elif p1_type == ValueTypes.REGISTER and p2_type == ValueTypes.NUMBER:
             op_code = OpCodes.SUB_NUMBER_FROM_REG
         else:
-            raise ValueError(f"ADD does not support operands {p1_value} and {p2_value}"
-                             f" on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{inst}} does not support operands {value1} and {value2}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="ADD",
+                                     value1=p1_value,
+                                     value2=p2_value,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._code.append(op_code.value)
         self._code.append(p1_value)
@@ -392,7 +447,12 @@ class Assembler:
         if p1_type == ValueTypes.REGISTER:
             op_code = OpCodes.INC_REG
         else:
-            raise ValueError(f"INC does not support operands {p1_value} on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{inst}} does not support operand {value1}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="INC",
+                                     value1=p1_value,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._code.append(op_code.value)
         self._code.append(p1_value)
@@ -411,7 +471,12 @@ class Assembler:
         if p1_type == ValueTypes.REGISTER:
             op_code = OpCodes.DEC_REG
         else:
-            raise ValueError(f"DEC does not support operands {p1_value} on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{inst}} does not support operand {value1}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="DEC",
+                                     value1=p1_value,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._code.append(op_code.value)
         self._code.append(p1_value)
@@ -434,8 +499,13 @@ class Assembler:
         elif p1_type == ValueTypes.REGISTER and p2_type == ValueTypes.NUMBER:
             op_code = OpCodes.CMP_NUMBER_WITH_REG
         else:
-            raise ValueError(f"CMP does not support operands {p1_value} and {p2_value}"
-                             f" on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{inst}} does not support operands {value1} and {value2}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="CMP",
+                                     value1=p1_value,
+                                     value2=p2_value,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._code.append(op_code.value)
         self._code.append(p1_value)
@@ -457,7 +527,12 @@ class Assembler:
         elif p1_type == ValueTypes.NUMBER:
                 op_code = OpCodes.JMP_ADDRESS
         else:
-            raise ValueError(f"JMP does not support operands {p1_value} on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{inst}} does not support operand {value1}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="JMP",
+                                     value1=p1_value,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._code.append(op_code.value)
         self._code.append(p1_value)
@@ -484,7 +559,12 @@ class Assembler:
         elif p1_type == ValueTypes.NUMBER:
                 op_code = OpCodes.JC_ADDRESS
         else:
-            raise ValueError(f"JC does not support operands {p1_value} on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{inst}} does not support operand {value1}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="JC",
+                                     value1=p1_value,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._code.append(op_code.value)
         self._code.append(p1_value)
@@ -511,7 +591,12 @@ class Assembler:
         elif p1_type == ValueTypes.NUMBER:
                 op_code = OpCodes.JNC_ADDRESS
         else:
-            raise ValueError(f"JNC does not support operands {p1_value} on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{inst}} does not support operand {value1}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="JNC",
+                                     value1=p1_value,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._code.append(op_code.value)
         self._code.append(p1_value)
@@ -535,7 +620,12 @@ class Assembler:
         elif p1_type == ValueTypes.NUMBER:
                 op_code = OpCodes.JZ_ADDRESS
         else:
-            raise ValueError(f"JZ does not support operands {p1_value} on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{inst}} does not support operand {value1}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="JZ",
+                                     value1=p1_value,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._code.append(op_code.value)
         self._code.append(p1_value)
@@ -559,7 +649,12 @@ class Assembler:
         elif p1_type == ValueTypes.NUMBER:
                 op_code = OpCodes.JNZ_ADDRESS
         else:
-            raise ValueError(f"JNZ does not support operands {p1_value} on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{inst}} does not support operand {value1}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="JNZ",
+                                     value1=p1_value,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._code.append(op_code.value)
         self._code.append(p1_value)
@@ -607,7 +702,12 @@ class Assembler:
         elif p1_type == ValueTypes.NUMBER:
             op_code = OpCodes.JNA_ADDRESS
         else:
-            raise ValueError(f"JNA does not support operands {p1_value} on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{inst}} does not support operand {value1}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="JNA",
+                                     value1=p1_value,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._code.append(op_code.value)
         self._code.append(p1_value)
@@ -632,7 +732,12 @@ class Assembler:
         elif p1_type == ValueTypes.NUMBER:
             op_code = OpCodes.PUSH_NUMBER
         else:
-            raise ValueError(f"PUSH does not support operands {p1_value} on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{inst}} does not support operand {value1}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="PUSH",
+                                     value1=p1_value,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._code.append(op_code.value)
         self._code.append(p1_value)
@@ -651,7 +756,12 @@ class Assembler:
         if p1_type == ValueTypes.REGISTER:
             op_code = OpCodes.POP_REG
         else:
-            raise ValueError(f"POP does not support operands {p1_value} on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{inst}} does not support operand {value1}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="POP",
+                                     value1=p1_value,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._code.append(op_code.value)
         self._code.append(p1_value)
@@ -672,7 +782,12 @@ class Assembler:
         elif p1_type == ValueTypes.NUMBER:
             op_code = OpCodes.CALL_ADDRESS
         else:
-            raise ValueError(f"PUSH does not support operands {p1_value} on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{inst}} does not support operand {value1}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="PUSH",
+                                     value1=p1_value,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._code.append(op_code.value)
         self._code.append(p1_value)
@@ -708,7 +823,12 @@ class Assembler:
         elif p1_type == ValueTypes.NUMBER:
             op_code = OpCodes.MUL_NUMBER
         else:
-            raise ValueError(f"MUL does not support operands {p1_value} on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{inst}} does not support operand {value1}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="MUL",
+                                     value1=p1_value,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._code.append(op_code.value)
         self._code.append(p1_value)
@@ -734,7 +854,12 @@ class Assembler:
         elif p1_type == ValueTypes.NUMBER:
             op_code = OpCodes.DIV_NUMBER
         else:
-            raise ValueError(f"DIV does not support operands {p1_value} on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{inst}} does not support operand {value1}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="DIV",
+                                     value1=p1_value,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._code.append(op_code.value)
         self._code.append(p1_value)
@@ -757,8 +882,13 @@ class Assembler:
         elif p1_type == ValueTypes.REGISTER and p2_type == ValueTypes.NUMBER:
             op_code = OpCodes.AND_NUMBER_WITH_REG
         else:
-            raise ValueError(f"AND does not support operands {p1_value} and {p2_value}"
-                             f" on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{inst}} does not support operands {value1} and {value2}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="AND",
+                                     value1=p1_value,
+                                     value2=p2_value,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._code.append(op_code.value)
         self._code.append(p1_value)
@@ -782,8 +912,13 @@ class Assembler:
         elif p1_type == ValueTypes.REGISTER and p2_type == ValueTypes.NUMBER:
             op_code = OpCodes.OR_NUMBER_WITH_REG
         else:
-            raise ValueError(f"OR does not support operands {p1_value} and {p2_value}"
-                             f" on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{inst}} does not support operands {value1} and {value2}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="OR",
+                                     value1=p1_value,
+                                     value2=p2_value,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._code.append(op_code.value)
         self._code.append(p1_value)
@@ -807,8 +942,13 @@ class Assembler:
         elif p1_type == ValueTypes.REGISTER and p2_type == ValueTypes.NUMBER:
             op_code = OpCodes.XOR_NUMBER_WITH_REG
         else:
-            raise ValueError(f"XOR does not support operands {p1_value} and {p2_value}"
-                             f" on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{inst}} does not support operands {value1} and {value2}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="XOR",
+                                     value1=p1_value,
+                                     value2=p2_value,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._code.append(op_code.value)
         self._code.append(p1_value)
@@ -828,7 +968,12 @@ class Assembler:
         if p1_type == ValueTypes.REGISTER:
             op_code = OpCodes.NOT_REG
         else:
-            raise ValueError(f"NOT does not support operands {p1_value} on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{inst}} does not support operand {value1}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="NOT",
+                                     value1=p1_value,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._code.append(op_code.value)
         self._code.append(p1_value)
@@ -854,8 +999,12 @@ class Assembler:
         elif p1_type == ValueTypes.REGISTER and p2_type == ValueTypes.NUMBER:
             op_code = OpCodes.SHL_NUMBER_WITH_REG
         else:
-            raise ValueError(f"SHL does not support operands {p1_value} and {p2_value}"
-                             f" on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{inst}} does not support operand {value1}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="SHL",
+                                     value1=p1_value,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._code.append(op_code.value)
         self._code.append(p1_value)
@@ -882,8 +1031,13 @@ class Assembler:
         elif p1_type == ValueTypes.REGISTER and p2_type == ValueTypes.NUMBER:
             op_code = OpCodes.SHR_NUMBER_WITH_REG
         else:
-            raise ValueError(f"SHR does not support operands {p1_value} and {p2_value}"
-                             f" on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{inst}} does not support operands {value1} and {value2}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="SHR",
+                                     value1=p1_value,
+                                     value2=p2_value,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._code.append(op_code.value)
         self._code.append(p1_value)
@@ -904,8 +1058,13 @@ class Assembler:
         elif p1_type == ValueTypes.REGISTER and p2_type == ValueTypes.REG_ADDRESS:
             op_code = OpCodes.IN_REGPORT_TO_REG
         else:
-            raise ValueError(f"IN does not support operands from {p1_type.name} to {p2_type.name}"
-                             f" on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{inst}} does not support operands from {name1} to {name2}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="IN",
+                                     name1=p1_type.name,
+                                     name2=p2_type.name,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._code.append(op_code.value)
         self._code.append(p1_value)
@@ -926,15 +1085,19 @@ class Assembler:
         elif p1_type == ValueTypes.REG_ADDRESS and p2_type == ValueTypes.REGISTER:
             op_code = OpCodes.OUT_REG_TO_REGPORT
         else:
-            raise ValueError(f"OUT does not support operands from {p1_type.name} to {p2_type.name}"
-                             f" on line {self._line_number}: '{self._line}'")
+            raise ValueError(_("{inst}} does not support operands from {name1} to {name2}"
+                               " on line {line_number}: '{line}'")
+                             .format(inst="OUT",
+                                     name1=p1_type.name,
+                                     name2=p2_type.name,
+                                     line_number=self._line_number,
+                                     line=self._line))
 
         self._code.append(op_code.value)
         self._code.append(p1_value)
         self._code.append(p2_value)
 
     def _oper_ERROR(self, match: re.Match):
-        raise ValueError(f"Invalid instruction"
-                         f" on line {self._line_number}: '{self._line}'")
-
-
+        raise ValueError(_("Invalid instruction on line {line_number}: '{line}'")
+                         .format(line_number=self._line_number,
+                                 line=self._line))

@@ -4,6 +4,12 @@
 
 from enum import Enum
 from math import log, ceil
+from asmbattle.files import *
+
+# Set up message catalog access
+t = get_translation('memory')
+t.install()
+_ = t.gettext
 
 class FaultError(BaseException):
     pass
@@ -39,7 +45,7 @@ class BaseStorage:
 
     def load(self, address: int, by_cpu=True) -> int:
         if address < 0 or address > self._size:
-            raise KeyError(f"Memory access violation at {address}")
+            raise KeyError(_("Memory access violation at {address}").format(address=address))
 
         if by_cpu:
             self._last_access = address
@@ -48,10 +54,10 @@ class BaseStorage:
     def store(self, address: int, value: int, owner, by_cpu=True):
         """Note: owner for compatibility with subclasses"""
         if address < 0 or address >= self._size:
-            raise KeyError(f"Memory access violation at {address}")
+            raise KeyError(_("Memory access violation at {address}").format(address=address))
 
         if value < Memory.MIN_VALUE or value > Memory.MAX_VALUE:
-            raise ValueError(f"Memory overflow with value {value}")
+            raise ValueError(_("Memory overflow with value {value}").format(value=value))
 
         if by_cpu:
             self._last_access = address
@@ -103,13 +109,14 @@ class ROM(Memory):
     def store(self, address: int, value: int, owner: int, by_cpu=True):
         if owner >= 0 or by_cpu:
             address_str = format(address, self.display_format.format)
-            raise FaultError(f"Read-only memory at {address_str}")
+            raise FaultError(_("Read-only memory at {address_str}").format(address_str=address_str))
         else:
             super().store(address, value, owner, by_cpu)
 
     def mass_store(self, address: int, values: [int], can_write_rom=False, owner=-1):
         if not can_write_rom:
-            raise FaultError(f"address {address} is read-only")
+            address_str = format(address, self.display_format.format)
+            raise FaultError(_("Read-only memory at {address_str}").format(address_str=address_str))
         else:
             super().mass_store(address, values, owner)
 

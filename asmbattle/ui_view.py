@@ -1,24 +1,19 @@
 # /usr/bin/python3
 # -*- coding: UTF-8 -*-
+import os
+import gettext
+import webbrowser
+
 import tkinter
 from tkinter import *
 from tkinter import ttk
 from tkinter import font
 from tkinter import scrolledtext
 from asmbattle.aboutbox import AboutBox, HelpBox
-import os
-import gettext
-import webbrowser
-
-
-PROGRAM_DIR = os.path.dirname(os.path.abspath(__file__))
-ROOT_DIR = os.path.abspath(PROGRAM_DIR + "/..")
-RESOURCE_DIR = ROOT_DIR + "/resources"
-ICON_DIR = ROOT_DIR + "/resources/icons"
-LOCALE_DIR = ROOT_DIR + "/locale"
+from asmbattle.files import *
 
 # Set up message catalog access
-t = gettext.translation('ui_view', LOCALE_DIR, fallback=True)
+t = get_translation('ui_view')
 t.install()
 _ = t.gettext
 
@@ -28,15 +23,15 @@ _ = t.gettext
 #         tkinter.Listbox.__init__(self, parent, *args, **kwargs)
 #
 #         self.popup_menu = tkinter.Menu(self, tearoff=0)
-#         self.popup_menu.add_command(label="Cut",
+#         self.popup_menu.add_command(label=_("Cut"),
 #                                     command=self.cut_selected)
-#         self.popup_menu.add_command(label="Copy",
+#         self.popup_menu.add_command(label=_("Copy"),
 #                                     command=self.copy_selected)
-#         self.popup_menu.add_command(label="Paste",
+#         self.popup_menu.add_command(label=_("Paste"),
 #                                     command=self.paste)
-#         self.popup_menu.add_command(label="Select All",
+#         self.popup_menu.add_command(label=_("Select All"),
 #                                     command=self.select_all)
-#         self.popup_menu.add_command(label="Delete",
+#         self.popup_menu.add_command(label=_("Delete"),
 #                                     command=self.delete_selected)
 #         self.parent = parent
 #         self.parent.bind("<Button-2>", self.popup) # Button-2 on Aqua
@@ -268,7 +263,7 @@ class BaseWindow(Tk):
         sep.pack(padx=15, pady=5, side=tkinter.RIGHT)
 
     def add_error(self, frame) -> StringVar:
-        link1=Label(frame, text=_("To support me with this project, buy me pizza !"),
+        link1=Label(frame, text=_("If you like this program, buy me pizza !"),
                     underline=-1, fg="blue", cursor="hand2")
         link1.pack(side=TOP, expand=FALSE)
         link1.bind("<Button-1>", lambda e: webbrowser.open("https://www.buymeacoffee.com/michelrondeau"))

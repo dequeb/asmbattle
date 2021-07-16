@@ -3,24 +3,17 @@
 from tkinter import *
 from tk_html_widgets import HTMLScrolledText
 import webbrowser
-import os
-import gettext
-import markdown
-
-
-PROGRAM_DIR = os.path.dirname(os.path.abspath(__file__))
-ROOT_DIR = os.path.abspath(PROGRAM_DIR + "/..")
-RESOURCE_DIR = ROOT_DIR + "/resources"
-ICON_DIR = ROOT_DIR + "/resources/icons"
-LOCALE_DIR = ROOT_DIR + "/locale"
+import markdown2 as markdown
+from asmbattle.files import *
 
 # Set up message catalog access
-t = gettext.translation('aboutbox', LOCALE_DIR, fallback=True)
+t = get_translation('aboutbox')
 t.install()
 _ = t.gettext
 
+
 class AboutBox(Toplevel):
-    VERSION= "0.9.1"   # TODO DON'T forget to update this before each release...
+    VERSION= open(get_root_filename('VERSION'), 'r').read()
     count = 0
 
     def __init__(self, parent):
@@ -35,15 +28,19 @@ class AboutBox(Toplevel):
 
         self.title(_("about..."))
         self["bg"]="white"
+        link1=Label(self, text=_("If you like this program, buy me pizza !"),
+                    underline=-1, fg="blue", cursor="hand2")
+        link1.pack(side=TOP, expand=FALSE)
+
         top_frame = Frame(self, bg="white")
         top_frame.pack(side=TOP, fill=X, expand=TRUE)
 
         # image
         canvas = Canvas(top_frame)
         canvas.pack(side=LEFT, fill='both', expand='yes')
-        self.img = PhotoImage(file=ICON_DIR + "/icon_256x256.png")
 
         try:
+            self.img = PhotoImage(file= get_icon_filename("icon_256x256.png"))
             canvas.create_image(1, 1, image=self.img, anchor=NW)
         except TclError:
             pass
@@ -61,15 +58,15 @@ class AboutBox(Toplevel):
         Button(self, text=_("   Ok   "), command=self.do_close, bg="systemButtonFace").pack(ipadx= 20, ipady=20, padx=5, pady=5, anchor=S)
 
 
-        html = markdown.markdown(open( ROOT_DIR + _("/README.md"), "r").read())
+        html = markdown.markdown(open( get_root_filename(_("README.md")), "r").read())
         st = HTMLScrolledText(self, padx=20, pady=20, height=13, relief=GROOVE, wrap=WORD, html=html)
         st.pack(side=TOP, fill=BOTH, expand='yes')
 
-        html = markdown.markdown(open(ROOT_DIR +_("/LICENCE.txt"), "r").read())
+        html = markdown.markdown(open(get_root_filename(_("LICENCE.txt")), "r").read())
         st = HTMLScrolledText(self, padx=20, pady=20, height=13, relief=GROOVE, wrap=WORD, html=html)
         st.pack(side=TOP, fill=BOTH, expand='yes')
 
-        html = markdown.markdown(open(ROOT_DIR + _("/CHANGELOG.md"), "r").read())
+        html = markdown.markdown(open(get_root_filename(_("CHANGELOG.md")), "r").read())
         st = HTMLScrolledText(self, padx=20, pady=20, height=13, relief=GROOVE, wrap=WORD, html=html)
         st.pack(side=TOP, fill=BOTH, expand='yes')
 

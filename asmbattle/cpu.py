@@ -9,15 +9,10 @@ from math import floor
 
 from asmbattle.opcodes import OpCodes
 from asmbattle.memory import BaseStorage, NumBase, FaultError
-
-PROGRAM_DIR = os.path.dirname(os.path.abspath(__file__))
-ROOT_DIR = os.path.abspath(PROGRAM_DIR + "/..")
-RESOURCE_DIR = ROOT_DIR + "/resources"
-ICON_DIR = ROOT_DIR + "/resources/icons"
-LOCALE_DIR = ROOT_DIR + "/locale"
+from asmbattle.files import *
 
 # Set up message catalog access
-t = gettext.translation('ui_view', LOCALE_DIR, fallback=True)
+t = get_translation('cpu')
 t.install()
 _ = t.gettext
 
