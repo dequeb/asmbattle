@@ -1,5 +1,12 @@
 #CHANGE LOG
 
+##version 0.9.2
+* remove Cython
+* complete translation to fr_CA
+* experimental Mac Application packaging
+* experimental source packaging  
+* first testes on Windows
+
 ##version 0.9.1
 * rewrite in tkinter
 * build with Cython

@@ -1,6 +1,4 @@
-# include resources/*
-# include locale/*
-# include LICENCE.txt
-# include CHANGELOG.txt
-# include README.md
-# include ASM/*.asm
+graft resources
+graft locale
+graft ASM
+include *.md

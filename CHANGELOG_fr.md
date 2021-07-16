@@ -1,5 +1,12 @@
 #CHANGE LOG
 
+##version 0.9.2
+* retrait de Cython
+* compléter la traduction version le fr_CA
+* Application macOS expérimentale
+* paquet source expérimental  
+* premiers tests sous Windows
+
 ##version 0.9.1
 * réécriture avec la bibliothèque "tkinter"
 * ajout d'un lien vers "payé moi une pizza..."
