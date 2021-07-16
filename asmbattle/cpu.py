@@ -229,7 +229,7 @@ class Cpu:
         return base + offset
 
     def step(self) -> bool:
-        instr_name = _("UNKNOWN")
+        instr_name = "UNKNOWN"
 
         if self._fault:
             raise FaultError(_("FAULT. Reset to continue"))

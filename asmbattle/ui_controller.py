@@ -799,7 +799,6 @@ class Windows2Panes(MainWindow):
 
 def main():
     logging.basicConfig(level=logging.DEBUG)
-    logging.getLogger(__name__).debug(str(locale.getlocale()))
     root = Windows2Panes(sys.argv)
     root.mainloop()
 

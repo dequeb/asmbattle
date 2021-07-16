@@ -320,8 +320,9 @@ class Assembler:
             for val in p1_value:
                 self._code.append(val)
         else:
-            raise ValueError(_("DB does not support operand {p1_value} on line {line_number}: '{line}'")
-                             .format(p1_value=p1_value,
+            raise ValueError(_("{inst} does not support operand {value1} on line {line_number}: '{line}'")
+                             .format(inst="DB",
+                                     value1=p1_value,
                                      line_number=self._line_number,
                                      line=self._line))
 
@@ -361,7 +362,7 @@ class Assembler:
         elif p1_type == ValueTypes.REG_ADDRESS and p2_type == ValueTypes.NUMBER:
             op_code = OpCodes.MOV_NUMBER_TO_REGADDRESS
         else:
-            raise ValueError(_("{inst}} does not support operands from {name1} to {name2}"
+            raise ValueError(_("{inst} does not support operands from {name1} to {name2}"
                                " on line {line_number}: '{line}'")
                              .format(inst="MOV",
                                      name1=p1_type.name,
@@ -391,7 +392,7 @@ class Assembler:
         elif p1_type == ValueTypes.REGISTER and p2_type == ValueTypes.NUMBER:
             op_code = OpCodes.ADD_NUMBER_TO_REG
         else:
-            raise ValueError(_("{inst}} does not support operands {value1} and {value2}"
+            raise ValueError(_("{inst} does not support operands {value1} and {value2}"
                                " on line {line_number}: '{line}'")
                              .format(inst="ADD",
                                      value1=p1_value,
@@ -421,7 +422,7 @@ class Assembler:
         elif p1_type == ValueTypes.REGISTER and p2_type == ValueTypes.NUMBER:
             op_code = OpCodes.SUB_NUMBER_FROM_REG
         else:
-            raise ValueError(_("{inst}} does not support operands {value1} and {value2}"
+            raise ValueError(_("{inst} does not support operands {value1} and {value2}"
                                " on line {line_number}: '{line}'")
                              .format(inst="ADD",
                                      value1=p1_value,
@@ -447,7 +448,7 @@ class Assembler:
         if p1_type == ValueTypes.REGISTER:
             op_code = OpCodes.INC_REG
         else:
-            raise ValueError(_("{inst}} does not support operand {value1}"
+            raise ValueError(_("{inst} does not support operand {value1}"
                                " on line {line_number}: '{line}'")
                              .format(inst="INC",
                                      value1=p1_value,
@@ -471,7 +472,7 @@ class Assembler:
         if p1_type == ValueTypes.REGISTER:
             op_code = OpCodes.DEC_REG
         else:
-            raise ValueError(_("{inst}} does not support operand {value1}"
+            raise ValueError(_("{inst} does not support operand {value1}"
                                " on line {line_number}: '{line}'")
                              .format(inst="DEC",
                                      value1=p1_value,
@@ -499,7 +500,7 @@ class Assembler:
         elif p1_type == ValueTypes.REGISTER and p2_type == ValueTypes.NUMBER:
             op_code = OpCodes.CMP_NUMBER_WITH_REG
         else:
-            raise ValueError(_("{inst}} does not support operands {value1} and {value2}"
+            raise ValueError(_("{inst} does not support operands {value1} and {value2}"
                                " on line {line_number}: '{line}'")
                              .format(inst="CMP",
                                      value1=p1_value,
@@ -527,7 +528,7 @@ class Assembler:
         elif p1_type == ValueTypes.NUMBER:
                 op_code = OpCodes.JMP_ADDRESS
         else:
-            raise ValueError(_("{inst}} does not support operand {value1}"
+            raise ValueError(_("{inst} does not support operand {value1}"
                                " on line {line_number}: '{line}'")
                              .format(inst="JMP",
                                      value1=p1_value,
@@ -559,7 +560,7 @@ class Assembler:
         elif p1_type == ValueTypes.NUMBER:
                 op_code = OpCodes.JC_ADDRESS
         else:
-            raise ValueError(_("{inst}} does not support operand {value1}"
+            raise ValueError(_("{inst} does not support operand {value1}"
                                " on line {line_number}: '{line}'")
                              .format(inst="JC",
                                      value1=p1_value,
@@ -591,7 +592,7 @@ class Assembler:
         elif p1_type == ValueTypes.NUMBER:
                 op_code = OpCodes.JNC_ADDRESS
         else:
-            raise ValueError(_("{inst}} does not support operand {value1}"
+            raise ValueError(_("{inst} does not support operand {value1}"
                                " on line {line_number}: '{line}'")
                              .format(inst="JNC",
                                      value1=p1_value,
@@ -620,7 +621,7 @@ class Assembler:
         elif p1_type == ValueTypes.NUMBER:
                 op_code = OpCodes.JZ_ADDRESS
         else:
-            raise ValueError(_("{inst}} does not support operand {value1}"
+            raise ValueError(_("{inst} does not support operand {value1}"
                                " on line {line_number}: '{line}'")
                              .format(inst="JZ",
                                      value1=p1_value,
@@ -649,7 +650,7 @@ class Assembler:
         elif p1_type == ValueTypes.NUMBER:
                 op_code = OpCodes.JNZ_ADDRESS
         else:
-            raise ValueError(_("{inst}} does not support operand {value1}"
+            raise ValueError(_("{inst} does not support operand {value1}"
                                " on line {line_number}: '{line}'")
                              .format(inst="JNZ",
                                      value1=p1_value,
@@ -702,7 +703,7 @@ class Assembler:
         elif p1_type == ValueTypes.NUMBER:
             op_code = OpCodes.JNA_ADDRESS
         else:
-            raise ValueError(_("{inst}} does not support operand {value1}"
+            raise ValueError(_("{inst} does not support operand {value1}"
                                " on line {line_number}: '{line}'")
                              .format(inst="JNA",
                                      value1=p1_value,
@@ -732,7 +733,7 @@ class Assembler:
         elif p1_type == ValueTypes.NUMBER:
             op_code = OpCodes.PUSH_NUMBER
         else:
-            raise ValueError(_("{inst}} does not support operand {value1}"
+            raise ValueError(_("{inst} does not support operand {value1}"
                                " on line {line_number}: '{line}'")
                              .format(inst="PUSH",
                                      value1=p1_value,
@@ -756,7 +757,7 @@ class Assembler:
         if p1_type == ValueTypes.REGISTER:
             op_code = OpCodes.POP_REG
         else:
-            raise ValueError(_("{inst}} does not support operand {value1}"
+            raise ValueError(_("{inst} does not support operand {value1}"
                                " on line {line_number}: '{line}'")
                              .format(inst="POP",
                                      value1=p1_value,
@@ -782,7 +783,7 @@ class Assembler:
         elif p1_type == ValueTypes.NUMBER:
             op_code = OpCodes.CALL_ADDRESS
         else:
-            raise ValueError(_("{inst}} does not support operand {value1}"
+            raise ValueError(_("{inst} does not support operand {value1}"
                                " on line {line_number}: '{line}'")
                              .format(inst="PUSH",
                                      value1=p1_value,
@@ -823,7 +824,7 @@ class Assembler:
         elif p1_type == ValueTypes.NUMBER:
             op_code = OpCodes.MUL_NUMBER
         else:
-            raise ValueError(_("{inst}} does not support operand {value1}"
+            raise ValueError(_("{inst} does not support operand {value1}"
                                " on line {line_number}: '{line}'")
                              .format(inst="MUL",
                                      value1=p1_value,
@@ -854,7 +855,7 @@ class Assembler:
         elif p1_type == ValueTypes.NUMBER:
             op_code = OpCodes.DIV_NUMBER
         else:
-            raise ValueError(_("{inst}} does not support operand {value1}"
+            raise ValueError(_("{inst} does not support operand {value1}"
                                " on line {line_number}: '{line}'")
                              .format(inst="DIV",
                                      value1=p1_value,
@@ -882,7 +883,7 @@ class Assembler:
         elif p1_type == ValueTypes.REGISTER and p2_type == ValueTypes.NUMBER:
             op_code = OpCodes.AND_NUMBER_WITH_REG
         else:
-            raise ValueError(_("{inst}} does not support operands {value1} and {value2}"
+            raise ValueError(_("{inst} does not support operands {value1} and {value2}"
                                " on line {line_number}: '{line}'")
                              .format(inst="AND",
                                      value1=p1_value,
@@ -912,7 +913,7 @@ class Assembler:
         elif p1_type == ValueTypes.REGISTER and p2_type == ValueTypes.NUMBER:
             op_code = OpCodes.OR_NUMBER_WITH_REG
         else:
-            raise ValueError(_("{inst}} does not support operands {value1} and {value2}"
+            raise ValueError(_("{inst} does not support operands {value1} and {value2}"
                                " on line {line_number}: '{line}'")
                              .format(inst="OR",
                                      value1=p1_value,
@@ -942,7 +943,7 @@ class Assembler:
         elif p1_type == ValueTypes.REGISTER and p2_type == ValueTypes.NUMBER:
             op_code = OpCodes.XOR_NUMBER_WITH_REG
         else:
-            raise ValueError(_("{inst}} does not support operands {value1} and {value2}"
+            raise ValueError(_("{inst} does not support operands {value1} and {value2}"
                                " on line {line_number}: '{line}'")
                              .format(inst="XOR",
                                      value1=p1_value,
@@ -968,7 +969,7 @@ class Assembler:
         if p1_type == ValueTypes.REGISTER:
             op_code = OpCodes.NOT_REG
         else:
-            raise ValueError(_("{inst}} does not support operand {value1}"
+            raise ValueError(_("{inst} does not support operand {value1}"
                                " on line {line_number}: '{line}'")
                              .format(inst="NOT",
                                      value1=p1_value,
@@ -999,7 +1000,7 @@ class Assembler:
         elif p1_type == ValueTypes.REGISTER and p2_type == ValueTypes.NUMBER:
             op_code = OpCodes.SHL_NUMBER_WITH_REG
         else:
-            raise ValueError(_("{inst}} does not support operand {value1}"
+            raise ValueError(_("{inst} does not support operand {value1}"
                                " on line {line_number}: '{line}'")
                              .format(inst="SHL",
                                      value1=p1_value,
@@ -1031,7 +1032,7 @@ class Assembler:
         elif p1_type == ValueTypes.REGISTER and p2_type == ValueTypes.NUMBER:
             op_code = OpCodes.SHR_NUMBER_WITH_REG
         else:
-            raise ValueError(_("{inst}} does not support operands {value1} and {value2}"
+            raise ValueError(_("{inst} does not support operands {value1} and {value2}"
                                " on line {line_number}: '{line}'")
                              .format(inst="SHR",
                                      value1=p1_value,
@@ -1058,7 +1059,7 @@ class Assembler:
         elif p1_type == ValueTypes.REGISTER and p2_type == ValueTypes.REG_ADDRESS:
             op_code = OpCodes.IN_REGPORT_TO_REG
         else:
-            raise ValueError(_("{inst}} does not support operands from {name1} to {name2}"
+            raise ValueError(_("{inst} does not support operands from {name1} to {name2}"
                                " on line {line_number}: '{line}'")
                              .format(inst="IN",
                                      name1=p1_type.name,
@@ -1085,7 +1086,7 @@ class Assembler:
         elif p1_type == ValueTypes.REG_ADDRESS and p2_type == ValueTypes.REGISTER:
             op_code = OpCodes.OUT_REG_TO_REGPORT
         else:
-            raise ValueError(_("{inst}} does not support operands from {name1} to {name2}"
+            raise ValueError(_("{inst} does not support operands from {name1} to {name2}"
                                " on line {line_number}: '{line}'")
                              .format(inst="OUT",
                                      name1=p1_type.name,
