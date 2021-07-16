@@ -1,0 +1,14 @@
+LICENCE.txt
+LICENCE_fr.txt
+MANIFEST.in
+README.md
+pyproject.toml
+setup.cfg
+setup.py
+asmbattle.egg-info/PKG-INFO
+asmbattle.egg-info/SOURCES.txt
+asmbattle.egg-info/dependency_links.txt
+asmbattle.egg-info/entry_points.txt
+asmbattle.egg-info/requires.txt
+asmbattle.egg-info/top_level.txt
+resources/asmbattle.png

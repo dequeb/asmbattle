@@ -1,0 +1,4 @@
+pillow
+markdown
+tk_html_widgets
+wheel

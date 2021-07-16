@@ -1,6 +1,6 @@
-include resources/*.png resources/*.ui
-include asmbattle/*.so
-include LICENCE.txt
-include CHANGELOG.txt
-include README.md
-include *.asm
+# include resources/*
+# include locale/*
+# include LICENCE.txt
+# include CHANGELOG.txt
+# include README.md
+# include ASM/*.asm
